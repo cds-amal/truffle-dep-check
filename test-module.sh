@@ -18,13 +18,17 @@ try {
 }
 
 EOF
-sed -i "s:PKG:$pkg:g" index.js
+
+# Replace all occurences of PKG with the current package name
+# GNU and BSD/OSX variant of sed explained: https://stackoverflow.com/a/22084103/2899290
+sed -i.bak "s:PKG:$pkg:g" index.js
 
 START_TIME=$(date +%s)
 echo "Probing @truffle/${pkg}"
 
-# install package
-npm i --registry http://localhost:4873 "@truffle/$pkg" > npm.out 2>&1
+# install package using verdaccio registry
+# the url should match verdaccio's endpoint
+npm install --registry http://localhost:4873 "@truffle/$pkg" > npm.out 2>&1
 
 cd - > /dev/null || exit
 
